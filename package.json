@@ -20,7 +20,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -41,8 +42,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
     "@babel/eslint-parser": "^7.25.1",
     "babel-eslint": "^10.1.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.1.0",
@@ -55,17 +59,13 @@
     "lint-staged": "^15.2.9",
     "prettier": "^3.3.3"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --quiet --fix"
-    ],
-    "src/**/*.{json,css,scss,html}": [
-      "prettier --write --ignore-unknown"
-    ]
-  }
+      "src/**/*.{js,jsx,ts,tsx}": [
+         "eslint --quiet --fix"
+      ],
+      "src/**/*.{json,css,scss,html}": [
+         "prettier --write --ignore-unknown"
+      ]
+   }
+
 }
