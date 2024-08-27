@@ -9,13 +9,14 @@
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
+    "plugin:react/jsx-runtime"
   ],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 12,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "plugins": ["react", "prettier", "import"],
@@ -25,21 +26,15 @@
     "linebreak-style": [0, "unix"],
     "quotes": ["error", "single"],
     "semi": ["error", "never"],
-    "react/react-in-jsx-scope": "off",
+    "react/react-in-jsx-scope": 0,
+    "react/jsx-uses-react": 0,
     "react/prop-types": 0,
     "import/no-unresolved": [2, { "caseSensitive": false }],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "import/order": [
       2,
       {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index"
-        ],
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
         "newlines-between": "always"
       }
     ]
@@ -50,6 +45,9 @@
         "extensions": [".js", ".jsx", ".ts", ".tsx"],
         "moduleDirectory": ["node_modules", "src/"]
       }
+    },
+    "react": {
+      "version": "detect"
     }
   }
 }

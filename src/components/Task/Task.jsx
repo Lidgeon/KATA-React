@@ -1,55 +1,45 @@
 //одна задача
 
-import { Component } from "react";
-import { formatDistanceToNow } from "date-fns";
-import KG from "date-fns/locale/en-AU";
-import PropTypes from "prop-types";
-import "./Task.css";
+import { Component } from 'react'
+import { formatDistanceToNow } from 'date-fns'
+import KG from 'date-fns/locale/en-AU'
+import PropTypes from 'prop-types'
+import './Task.css'
 
 export default class Task extends Component {
   state = {
     editing: false,
-    label: "",
-  };
+    label: '',
+  }
 
   onLabelChange = (e) => {
     this.setState({
       label: e.target.value,
-    });
-  };
+    })
+  }
 
   onSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     const {
       onEdit,
       item: { id },
-    } = this.props;
+    } = this.props
     if (this.state.label.trim()) {
-      onEdit(id, this.state.label);
+      onEdit(id, this.state.label)
       //console.log("Хочу передать", id, this.state.label);
-      this.setState({ label: "" });
-      this.setState({ editing: false });
+      this.setState({ label: '' })
+      this.setState({ editing: false })
     }
-  };
+  }
 
   render() {
-    const { item, onDeleted, onToggleDone } = this.props;
-    const { label, id, completed, date } = item;
+    const { item, onDeleted, onToggleDone } = this.props
+    const { label, id, completed, date } = item
 
     return (
-      <li
-        className={
-          completed ? "completed" : this.state.editing ? "editing" : null
-        }
-      >
+      <li className={completed ? 'completed' : this.state.editing ? 'editing' : null}>
         <div className="view" onClick={onToggleDone}>
-          <input
-            id={id}
-            className="toggle"
-            type="checkbox"
-            checked={completed}
-            onChange={() => {}}
-          />
+          <input id={id} className="toggle" type="checkbox" checked={completed} onChange={() => {}} />
           <label>
             <span className="description">{label}</span>
             <span className="created">{`created ${formatDistanceToNow(date, {
@@ -71,22 +61,17 @@ export default class Task extends Component {
         <button className="icon icon-destroy" onClick={onDeleted}></button>
         {this.state.editing && (
           <form onSubmit={this.onSubmit}>
-            <input
-              onChange={this.onLabelChange}
-              type="text"
-              className="edit"
-              value={this.state.label}
-            />
+            <input onChange={this.onLabelChange} type="text" className="edit" value={this.state.label} />
           </form>
         )}
       </li>
-    );
+    )
   }
 }
 
 Task.defaultProps = {
   item: {},
-};
+}
 
 Task.propTypes = {
   item: PropTypes.shape({
@@ -98,4 +83,4 @@ Task.propTypes = {
   onDeleted: PropTypes.func.isRequired,
   onToggleDone: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
-};
+}

@@ -1,29 +1,29 @@
 //форма для добавления
 
-import { Component } from "react";
-import PropTypes from "prop-types";
-import "./NewTaskForm.css";
+import { Component } from 'react'
+import PropTypes from 'prop-types'
+import './NewTaskForm.css'
 
 export default class NewTaskForm extends Component {
   state = {
-    label: "",
-  };
+    label: '',
+  }
 
   onLabelChange = (e) => {
     this.setState({
       label: e.target.value,
-    });
-  };
+    })
+  }
 
   onSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (this.state.label.trim()) {
-      this.props.onAdded(this.state.label);
+      this.props.onAdded(this.state.label)
       this.setState({
-        label: "",
-      });
+        label: '',
+      })
     }
-  };
+  }
 
   render() {
     return (
@@ -36,16 +36,16 @@ export default class NewTaskForm extends Component {
           value={this.state.label}
         />
       </form>
-    );
+    )
   }
 }
 
 NewTaskForm.defaultProps = {
-  title: "Todos",
-};
+  title: 'Todos',
+}
 
 NewTaskForm.propTypes = {
   placeholder: PropTypes.string,
   title: PropTypes.string,
   onAdded: PropTypes.func.isRequired,
-};
+}
