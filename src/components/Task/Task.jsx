@@ -4,6 +4,7 @@ import { Component } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import KG from 'date-fns/locale/en-AU'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import './Task.css'
 
 export default class Task extends Component {
@@ -26,7 +27,6 @@ export default class Task extends Component {
     } = this.props
     if (this.state.label.trim()) {
       onEdit(id, this.state.label)
-      //console.log("Хочу передать", id, this.state.label);
       this.setState({ label: '' })
       this.setState({ editing: false })
     }
@@ -35,12 +35,24 @@ export default class Task extends Component {
   render() {
     const { item, onDeleted, onToggleDone } = this.props
     const { label, id, completed, date } = item
+    const taskStatus = classNames('task', {
+      editing: this.state.editing,
+      completed: completed,
+    })
 
     return (
-      <li className={completed ? 'completed' : this.state.editing ? 'editing' : null}>
-        <div className="view" onClick={onToggleDone}>
-          <input id={id} className="toggle" type="checkbox" checked={completed} onChange={() => {}} />
-          <label>
+      <li className={taskStatus}>
+        <div className="view">
+          <input
+            id={id}
+            className="toggle"
+            type="checkbox"
+            checked={completed}
+            onChange={() => {
+              onToggleDone(item)
+            }}
+          />
+          <label onClick={onToggleDone}>
             <span className="description">{label}</span>
             <span className="created">{`created ${formatDistanceToNow(date, {
               includeSeconds: true,

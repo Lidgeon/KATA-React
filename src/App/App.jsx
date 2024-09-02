@@ -84,9 +84,13 @@ export default class App extends Component {
   filterTask() {
     const { todoData, filter } = this.state
     return todoData.filter(({ completed }) => {
-      const all = filter === 'All'
-      const complete = filter === 'Completed'
-      return all ? true : complete ? completed === true : completed === false
+      if (filter === 'All') {
+        return true
+      }
+      if (filter === 'Completed') {
+        return completed === true
+      }
+      return completed === false
     })
   }
 
@@ -95,7 +99,8 @@ export default class App extends Component {
   }
 
   render() {
-    const todoCount = this.state.todoData.length - this.state.todoData.filter((el) => el.completed).length
+    const todoCount = this.state.todoData.filter((el) => !el.completed).length
+    //
     //const { todoData } = this.state;
 
     return (
