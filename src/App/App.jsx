@@ -88,9 +88,8 @@ export default class App extends Component {
         return true
       }
       if (filter === 'Completed') {
-        return completed === true
+        return completed
       }
-      return completed === false
     })
   }
 
