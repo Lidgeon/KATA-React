@@ -52,7 +52,7 @@ export default class Task extends Component {
               onToggleDone(item)
             }}
           />
-          <label>
+          <label htmlFor={id}>
             <span className="description">{label}</span>
             <span className="created">{`created ${formatDistanceToNow(date, {
               includeSeconds: true,
