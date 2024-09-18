@@ -13,12 +13,14 @@ export default class App extends Component {
     filter: 'All',
   }
 
-  createTask(label) {
+  createTask(label, min, sec) {
     return {
       label,
       completed: false,
       id: this.maxId++,
       date: new Date(),
+      min,
+      sec,
     }
   }
 
@@ -53,8 +55,9 @@ export default class App extends Component {
     })
   }
 
-  addTask = (text) => {
-    const newItem = this.createTask(text)
+  addTask = (text, min, sec) => {
+    console.log('Мне передали' + text, min, sec)
+    const newItem = this.createTask(text, min, sec)
 
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem]
@@ -100,8 +103,6 @@ export default class App extends Component {
 
   render() {
     const todoCount = this.state.todoData.filter((el) => !el.completed).length
-    //
-    //const { todoData } = this.state;
 
     return (
       <section className="todoapp">

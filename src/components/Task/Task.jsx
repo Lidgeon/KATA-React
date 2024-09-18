@@ -11,6 +11,7 @@ export default class Task extends Component {
   state = {
     editing: false,
     label: '',
+    timerActive: false,
   }
 
   onLabelChange = (e) => {
@@ -32,13 +33,32 @@ export default class Task extends Component {
     }
   }
 
+  closeForm = (e) => {
+    if (e.keyCode == '27') {
+      console.log('heeell')
+    }
+  }
+
+  onTimer = () => {
+    if (!this.props.item.completed) {
+      this.setState(({ timerActive }) => ({
+        timerActive: !timerActive,
+      }))
+    }
+  }
+
   render() {
     const { item, onDeleted, onToggleDone } = this.props
-    const { label, id, completed, date } = item
+    const { label, id, completed, date, min, sec } = item
     const taskStatus = classNames('task', {
       editing: this.state.editing,
       completed: completed,
     })
+    const timerTaskStatus = classNames('timer-icon', {
+      'icon-play': !this.state.timerActive,
+      'icon-pause': this.state.timerActive,
+    })
+    const time = `${min}:${sec}`
 
     return (
       <li className={taskStatus}>
@@ -53,26 +73,31 @@ export default class Task extends Component {
             }}
           />
           <label htmlFor={id}>
-            <span className="description">{label}</span>
+            <span className="title">{label}</span>
+            <span className="description">
+              <button className={timerTaskStatus} onClick={this.onTimer} />
+              <div className="timer">{time}</div>
+            </span>
             <span className="created">{`created ${formatDistanceToNow(date, {
               includeSeconds: true,
               locale: KG,
               addSuffix: true,
             })}`}</span>
           </label>
+          <button
+            className="icon icon-edit"
+            onClick={() =>
+              this.setState(({ editing }) => ({
+                editing: !editing,
+                label: this.props.item.label,
+              }))
+            }
+          ></button>
+          <button className="icon icon-destroy" onClick={onDeleted}></button>
         </div>
-        <button
-          className="icon icon-edit"
-          onClick={() =>
-            this.setState(({ editing }) => ({
-              editing: !editing,
-              label: this.props.item.label,
-            }))
-          }
-        ></button>
-        <button className="icon icon-destroy" onClick={onDeleted}></button>
+
         {this.state.editing && (
-          <form onSubmit={this.onSubmit}>
+          <form onSubmit={this.onSubmit} onKeyDown={this.closeForm}>
             <input onChange={this.onLabelChange} type="text" className="edit" value={this.state.label} />
           </form>
         )}
