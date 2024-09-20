@@ -32,7 +32,7 @@ export default class NewTaskForm extends Component {
   onSubmit = (e) => {
     e.preventDefault()
     const input = [this.state.label, this.state.min, this.state.sec]
-    console.log(input)
+    //console.log(input)
     if (this.state.label.trim()) {
       this.props.onAdded(...input)
       this.setState({

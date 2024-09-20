@@ -13,6 +13,12 @@ export default class App extends Component {
     filter: 'All',
   }
 
+  // componentDidUpdate(prev) {
+  //   if (this.state.todoData !== prev.todoData) {
+  //     console.log(this.state.todoData, this.state.filter)
+  //   }
+  // }
+
   createTask(label, min, sec) {
     return {
       label,
@@ -46,6 +52,19 @@ export default class App extends Component {
     }))
   }
 
+  timerUpdate = (id, min, sec) => {
+    //console.log('меня вызвали?' + id, min, sec)
+    this.setState(({ todoData }) => ({
+      todoData: todoData.map((el) => {
+        if (el.id === id) {
+          el.min = min
+          el.sec = sec
+        }
+        return el
+      }),
+    }))
+  }
+
   deleteAllTask = () => {
     this.setState(({ todoData }) => {
       const newArr = todoData.filter((el) => !el.completed)
@@ -56,7 +75,7 @@ export default class App extends Component {
   }
 
   addTask = (text, min, sec) => {
-    console.log('Мне передали' + text, min, sec)
+    //console.log('Мне передали' + text, min, sec)
     const newItem = this.createTask(text, min, sec)
 
     this.setState(({ todoData }) => {
@@ -117,6 +136,8 @@ export default class App extends Component {
             onDeleted={this.deleteTask}
             onEdit={this.editTask}
             onToggleDone={this.onToggleDone}
+            timerUpdate={this.timerUpdate}
+            filter={this.state.filter}
           />
 
           <Footer

@@ -5,13 +5,14 @@ import { formatDistanceToNow } from 'date-fns'
 import KG from 'date-fns/locale/en-AU'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+
 import './Task.css'
+import Timer from '../../Timer/Timer'
 
 export default class Task extends Component {
   state = {
     editing: false,
     label: '',
-    timerActive: false,
   }
 
   onLabelChange = (e) => {
@@ -35,31 +36,17 @@ export default class Task extends Component {
 
   closeForm = (e) => {
     if (e.keyCode == '27') {
-      console.log('heeell')
-    }
-  }
-
-  onTimer = () => {
-    if (!this.props.item.completed) {
-      this.setState(({ timerActive }) => ({
-        timerActive: !timerActive,
-      }))
+      this.setState({ editing: false })
     }
   }
 
   render() {
-    const { item, onDeleted, onToggleDone } = this.props
-    const { label, id, completed, date, min, sec } = item
+    const { item, onDeleted, onToggleDone, timerUpdate, filter } = this.props
+    const { label, id, completed, date } = item
     const taskStatus = classNames('task', {
       editing: this.state.editing,
-      completed: completed,
+      completed,
     })
-    const timerTaskStatus = classNames('timer-icon', {
-      'icon-play': !this.state.timerActive,
-      'icon-pause': this.state.timerActive,
-    })
-    const time = `${min}:${sec}`
-
     return (
       <li className={taskStatus}>
         <div className="view">
@@ -75,8 +62,7 @@ export default class Task extends Component {
           <label htmlFor={id}>
             <span className="title">{label}</span>
             <span className="description">
-              <button className={timerTaskStatus} onClick={this.onTimer} />
-              <div className="timer">{time}</div>
+              <Timer item={item} timerUpdate={timerUpdate} filter={filter} />
             </span>
             <span className="created">{`created ${formatDistanceToNow(date, {
               includeSeconds: true,
