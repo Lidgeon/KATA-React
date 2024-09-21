@@ -1,4 +1,2 @@
-https://kata-react-one.vercel.app/
+[https://kata-react-one.vercel.app/](https://kata-react-dun.vercel.app/)
 
-
-Все мои коммиты по этапам работы пали в борьбе с эслинтом и хаски, я как-то перезаписала репозиторий и я не знаю, куда они делись...
