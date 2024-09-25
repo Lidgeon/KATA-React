@@ -1,1 +1,1 @@
-kata-react-omega.vercel.app
+[kata-react-omega.vercel.app]
