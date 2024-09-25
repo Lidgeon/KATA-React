@@ -13,11 +13,11 @@ export default class App extends Component {
     filter: 'All',
   }
 
-  // componentDidUpdate(prev) {
-  //   if (this.state.todoData !== prev.todoData) {
-  //     console.log(this.state.todoData, this.state.filter)
-  //   }
-  // }
+  componentDidUpdate(prev) {
+    if (this.state.filter !== prev.filter) {
+      //console.log(this.state.filter)
+    }
+  }
 
   createTask(label, min, sec) {
     return {
@@ -137,7 +137,6 @@ export default class App extends Component {
             onEdit={this.editTask}
             onToggleDone={this.onToggleDone}
             timerUpdate={this.timerUpdate}
-            filter={this.state.filter}
           />
 
           <Footer

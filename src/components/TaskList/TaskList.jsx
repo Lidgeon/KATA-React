@@ -10,7 +10,7 @@ export default class TaskList extends Component {
   render() {
     const { todos, onDeleted, onToggleDone, onEdit, timerUpdate, filter } = this.props
     return (
-      <ul className="todo-list">
+      <ul className="todo-list" filter={filter}>
         {todos.map((item) => (
           <Task
             key={item.id}
@@ -19,7 +19,6 @@ export default class TaskList extends Component {
             onEdit={onEdit}
             onToggleDone={() => onToggleDone(item.id)}
             timerUpdate={timerUpdate}
-            filter={filter}
           />
         ))}
       </ul>

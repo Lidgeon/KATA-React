@@ -17,12 +17,6 @@ export default class Timer extends Component {
   }
 
   componentDidUpdate(pr) {
-    if (this.props.filter != pr.filter) {
-      const time = this.timeMinSecConvert(this.state.genTime)
-      //console.log('Это бы передать ' + time)
-      this.props.timerUpdate(this.props.item.id, ...time)
-    }
-
     if (this.props.item.completed !== pr.item.completed) {
       this.setState(() => ({
         timerNotWork: false,
@@ -32,6 +26,8 @@ export default class Timer extends Component {
   }
 
   componentWillUnmount() {
+    const time = this.timeMinSecConvert(this.state.genTime)
+    this.props.timerUpdate(this.props.item.id, ...time)
     clearInterval(this.timerID)
   }
 
@@ -44,6 +40,9 @@ export default class Timer extends Component {
     s = num % 60
     while (s.toString().length < 2) {
       s = '0' + s
+    }
+    if (num < 0) {
+      clearInterval(this.timerID)
     }
     const res = `${m}:${s}`
     return num > -1 ? res : 'Время вышло'
@@ -63,8 +62,6 @@ export default class Timer extends Component {
     this.setState(({ genTime }) => ({
       genTime: genTime - 1,
     }))
-    console.log('!')
-    //console.log(this.state.genTime)
   }
 
   timerOn = () => {

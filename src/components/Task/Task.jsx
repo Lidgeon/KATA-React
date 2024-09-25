@@ -41,7 +41,7 @@ export default class Task extends Component {
   }
 
   render() {
-    const { item, onDeleted, onToggleDone, timerUpdate, filter } = this.props
+    const { item, onDeleted, onToggleDone, timerUpdate } = this.props
     const { label, id, completed, date } = item
     const taskStatus = classNames('task', {
       editing: this.state.editing,
@@ -62,7 +62,7 @@ export default class Task extends Component {
           <label htmlFor={id}>
             <span className="title">{label}</span>
             <span className="description">
-              <Timer item={item} timerUpdate={timerUpdate} filter={filter} />
+              <Timer item={item} timerUpdate={timerUpdate} />
             </span>
             <span className="created">{`created ${formatDistanceToNow(date, {
               includeSeconds: true,
