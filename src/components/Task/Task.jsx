@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import KG from 'date-fns/locale/en-AU'
-//import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import './Task.css'
@@ -82,14 +82,14 @@ const Task = ({ item, onDeleted, onToggleDone, onEdit, timerUpdate }) => {
 
 export default Task
 
-// Task.propTypes = {
-//   item: PropTypes.shape({
-//     id: PropTypes.number,
-//     label: PropTypes.string,
-//     completed: PropTypes.bool,
-//     //
-//   }),
-//   onDeleted: PropTypes.func.isRequired,
-//   onToggleDone: PropTypes.func.isRequired,
-//   onEdit: PropTypes.func.isRequired,
-// }
+Task.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.number,
+    label: PropTypes.string,
+    completed: PropTypes.bool,
+    //
+  }),
+  onDeleted: PropTypes.func.isRequired,
+  onToggleDone: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+}

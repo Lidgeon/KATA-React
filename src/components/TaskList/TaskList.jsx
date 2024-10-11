@@ -1,5 +1,5 @@
 //список задач
-//import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 import Task from '../Task/Task'
 
@@ -34,9 +34,9 @@ const TaskList = ({ todos, onDeleted, onToggleDone, onEdit, filter, timerUpdate 
 
 export default TaskList
 
-// TaskList.propTypes = {
-//   todos: PropTypes.any,
-//   onToggleDone: PropTypes.func.isRequired,
-//   onEdit: PropTypes.func.isRequired,
-//   onDeleted: PropTypes.func.isRequired,
-// }
+TaskList.propTypes = {
+  todos: PropTypes.any,
+  onToggleDone: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDeleted: PropTypes.func.isRequired,
+}
