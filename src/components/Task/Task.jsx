@@ -1,109 +1,95 @@
 //одна задача
 
-import { Component } from 'react'
+import { useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import KG from 'date-fns/locale/en-AU'
-import PropTypes from 'prop-types'
+//import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import './Task.css'
 import Timer from '../../Timer/Timer'
 
-export default class Task extends Component {
-  state = {
-    editing: false,
-    label: '',
+const Task = ({ item, onDeleted, onToggleDone, onEdit, timerUpdate }) => {
+  const { label, id, completed, date } = item
+  const [editing, setEdit] = useState(false)
+  const [labelInput, setLabel] = useState('')
+
+  const onLabelChange = (e) => {
+    setLabel(e.target.value)
   }
 
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    })
-  }
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
-    const {
-      onEdit,
-      item: { id },
-    } = this.props
-    if (this.state.label.trim()) {
-      onEdit(id, this.state.label)
-      this.setState({ label: '' })
-      this.setState({ editing: false })
+    if (labelInput.trim()) {
+      onEdit(id, labelInput)
+      setLabel('')
+      setEdit(false)
     }
   }
 
-  closeForm = (e) => {
+  const closeForm = (e) => {
     if (e.keyCode == '27') {
-      this.setState({ editing: false })
+      setEdit(false)
     }
   }
 
-  render() {
-    const { item, onDeleted, onToggleDone, timerUpdate } = this.props
-    const { label, id, completed, date } = item
-    const taskStatus = classNames('task', {
-      editing: this.state.editing,
-      completed,
-    })
-    return (
-      <li className={taskStatus}>
-        <div className="view">
-          <input
-            id={id}
-            className="toggle"
-            type="checkbox"
-            checked={completed}
-            onChange={() => {
-              onToggleDone(item)
-            }}
-          />
-          <label htmlFor={id}>
-            <span className="title">{label}</span>
+  const setEditingButton = () => {
+    setEdit(true), setLabel(label)
+  }
+
+  const taskStatus = classNames('task', {
+    editing: editing,
+    completed,
+  })
+
+  return (
+    <li className={taskStatus}>
+      <div className="view">
+        <input
+          id={id}
+          className="toggle"
+          type="checkbox"
+          checked={completed}
+          onChange={() => {
+            onToggleDone(item)
+          }}
+        />
+        <label htmlFor={id}>
+          <span className="title">{label}</span>
+          {
             <span className="description">
               <Timer item={item} timerUpdate={timerUpdate} />
             </span>
-            <span className="created">{`created ${formatDistanceToNow(date, {
-              includeSeconds: true,
-              locale: KG,
-              addSuffix: true,
-            })}`}</span>
-          </label>
-          <button
-            className="icon icon-edit"
-            onClick={() =>
-              this.setState(({ editing }) => ({
-                editing: !editing,
-                label: this.props.item.label,
-              }))
-            }
-          ></button>
-          <button className="icon icon-destroy" onClick={onDeleted}></button>
-        </div>
+          }
+          <span className="created">{`created ${formatDistanceToNow(date, {
+            includeSeconds: true,
+            locale: KG,
+            addSuffix: true,
+          })}`}</span>
+        </label>
+        <button className="icon icon-edit" onClick={setEditingButton}></button>
+        <button className="icon icon-destroy" onClick={onDeleted}></button>
+      </div>
 
-        {this.state.editing && (
-          <form onSubmit={this.onSubmit} onKeyDown={this.closeForm}>
-            <input onChange={this.onLabelChange} type="text" className="edit" value={this.state.label} />
-          </form>
-        )}
-      </li>
-    )
-  }
+      {editing && (
+        <form onSubmit={onSubmit} onKeyDown={closeForm}>
+          <input onChange={onLabelChange} type="text" className="edit" value={labelInput} />
+        </form>
+      )}
+    </li>
+  )
 }
 
-Task.defaultProps = {
-  item: {},
-}
+export default Task
 
-Task.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.number,
-    label: PropTypes.string,
-    completed: PropTypes.bool,
-    //
-  }),
-  onDeleted: PropTypes.func.isRequired,
-  onToggleDone: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
-}
+// Task.propTypes = {
+//   item: PropTypes.shape({
+//     id: PropTypes.number,
+//     label: PropTypes.string,
+//     completed: PropTypes.bool,
+//     //
+//   }),
+//   onDeleted: PropTypes.func.isRequired,
+//   onToggleDone: PropTypes.func.isRequired,
+//   onEdit: PropTypes.func.isRequired,
+// }

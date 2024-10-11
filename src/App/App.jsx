@@ -1,93 +1,46 @@
 import './App.css'
-import { Component } from 'react'
+import { useState } from 'react'
 
 import NewTaskForm from '../components/NewTaskForm/NewTaskForm'
 import TaskList from '../components/TaskList/TaskList'
 import Footer from '../components/Footer/Footer'
 
-export default class App extends Component {
-  maxId = 100
+const App = () => {
+  const [todoData, setTodoData] = useState([])
+  const [id, setId] = useState(100)
+  const [filter, setFilter] = useState('All')
 
-  state = {
-    todoData: [],
-    filter: 'All',
-  }
+  const todoCount = todoData.filter((el) => !el.completed).length
 
-  componentDidUpdate(prev) {
-    if (this.state.filter !== prev.filter) {
-      //console.log(this.state.filter)
-    }
-  }
-
-  createTask(label, min, sec) {
+  const createTask = (label, min, sec) => {
+    setId((id) => id + 1)
     return {
       label,
       completed: false,
-      id: this.maxId++,
+      id,
       date: new Date(),
-      min,
-      sec,
+      time: { min, sec },
     }
   }
 
-  deleteTask = (id) => {
-    this.setState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id)
-
-      const newArr = [...todoData.slice(0, idx), ...todoData.slice(idx + 1)]
-
-      return {
-        todoData: newArr,
-      }
+  const addTask = (text, min, sec) => {
+    const newItem = createTask(text, min, sec)
+    setTodoData((tdData) => {
+      return [...tdData, newItem]
     })
   }
 
-  editTask = (id, text) => {
-    //console.log("А мне передали", id, text);
-    this.setState(({ todoData }) => ({
-      todoData: todoData.map((el) => {
-        if (el.id === id) el.label = text
-        return el
-      }),
-    }))
+  const changeFilter = (data) => {
+    setFilter(data)
   }
 
-  timerUpdate = (id, min, sec) => {
-    //console.log('меня вызвали?' + id, min, sec)
-    this.setState(({ todoData }) => ({
-      todoData: todoData.map((el) => {
-        if (el.id === id) {
-          el.min = min
-          el.sec = sec
-        }
-        return el
-      }),
-    }))
-  }
-
-  deleteAllTask = () => {
-    this.setState(({ todoData }) => {
-      const newArr = todoData.filter((el) => !el.completed)
-      return {
-        todoData: newArr,
-      }
+  const deleteTask = (id) => {
+    setTodoData((tdData) => {
+      return tdData.filter((el) => el.id !== id)
     })
   }
 
-  addTask = (text, min, sec) => {
-    //console.log('Мне передали' + text, min, sec)
-    const newItem = this.createTask(text, min, sec)
-
-    this.setState(({ todoData }) => {
-      const newArr = [...todoData, newItem]
-
-      return {
-        todoData: newArr,
-      }
-    })
-  }
-
-  toggleProperty(arr, id, propName) {
+  const toggleProperty = (arr, id, propName) => {
     const idx = arr.findIndex((el) => el.id === id)
 
     const oldTask = arr[idx]
@@ -95,58 +48,65 @@ export default class App extends Component {
     return [...arr.slice(0, idx), newTask, ...arr.slice(idx + 1)]
   }
 
-  onToggleDone = (id) => {
-    this.setState(({ todoData }) => {
-      return {
-        todoData: this.toggleProperty(todoData, id, 'completed'),
-      }
+  const onToggleDone = (id) => {
+    setTodoData((tdData) => {
+      return toggleProperty(tdData, id, 'completed')
     })
   }
 
-  filterTask() {
-    const { todoData, filter } = this.state
-    return todoData.filter(({ completed }) => {
-      if (filter === 'All') {
-        return true
-      }
-      if (filter === 'Completed') {
-        return completed
-      }
-      return !completed
+  const editTask = (id, text) => {
+    //console.log('А мне передали', id, text)
+    setTodoData((tdData) => {
+      return tdData.map((el) => {
+        if (el.id === id) {
+          return {
+            ...el,
+            label: text,
+          }
+        }
+        return el
+      })
     })
   }
 
-  changeFilter(data) {
-    this.setState({ filter: data })
+  const timerUpdate = (id, min, sec) => {
+    //console.log('меня вызвали?' + id, min, sec)
+    setTodoData((tdData) => {
+      return tdData.map((el) => {
+        if (el.id === id) {
+          return {
+            ...el,
+            time: { min, sec },
+          }
+        }
+        return el
+      })
+    })
   }
 
-  render() {
-    const todoCount = this.state.todoData.filter((el) => !el.completed).length
-
-    return (
-      <section className="todoapp">
-        <header className="header">
-          <h1>todos</h1>
-          <NewTaskForm onAdded={this.addTask} />
-        </header>
-
-        <section className="main">
-          <TaskList
-            todos={this.filterTask()}
-            onDeleted={this.deleteTask}
-            onEdit={this.editTask}
-            onToggleDone={this.onToggleDone}
-            timerUpdate={this.timerUpdate}
-          />
-
-          <Footer
-            toDo={todoCount}
-            onDeleteAll={this.deleteAllTask}
-            changeFilter={this.changeFilter.bind(this)}
-            filter={this.state.filter}
-          />
-        </section>
-      </section>
-    )
+  const deleteAllTask = () => {
+    setTodoData((tdData) => {
+      return tdData.filter((el) => !el.completed)
+    })
   }
+
+  return (
+    <section className="todoapp">
+      <header className="header">
+        <h1>todos</h1>
+        <NewTaskForm onAdded={addTask} />
+      </header>
+      <TaskList
+        todos={todoData}
+        filter={filter}
+        onDeleted={deleteTask}
+        onEdit={editTask}
+        onToggleDone={onToggleDone}
+        timerUpdate={timerUpdate}
+      />
+      <Footer toDo={todoCount} onDeleteAll={deleteAllTask} changeFilter={changeFilter} filter={filter} />
+    </section>
+  )
 }
+
+export default App

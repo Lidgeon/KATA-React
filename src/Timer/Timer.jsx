@@ -1,37 +1,20 @@
-import { Component, Fragment } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import classNames from 'classnames'
 
-export default class Timer extends Component {
-  state = {
-    genTime: null,
-    timerNotWork: false,
-  }
+const Timer = ({ item, timerUpdate }) => {
+  const [genTime, setGenTime] = useState(null)
+  const [timerWork, setTimerWork] = useState(false)
 
-  componentDidMount() {
-    this.setState(() => {
-      const time = Number(this.props.item.min) * 60 + Number(this.props.item.sec)
-      return {
-        genTime: time,
-      }
-    })
-  }
+  const { id, completed, time } = item
 
-  componentDidUpdate(pr) {
-    if (this.props.item.completed !== pr.item.completed) {
-      this.setState(() => ({
-        timerNotWork: false,
-      }))
-      clearInterval(this.timerID)
-    }
-  }
+  useEffect(() => {
+    const sumTime = Number(time.min) * 60 + Number(time.sec)
+    setGenTime(sumTime)
+  }, [])
 
-  componentWillUnmount() {
-    const time = this.timeMinSecConvert(this.state.genTime)
-    this.props.timerUpdate(this.props.item.id, ...time)
-    clearInterval(this.timerID)
-  }
+  let timerId
 
-  timeConvert = (num) => {
+  const timeConvert = (num) => {
     let m = 0
     let s = 0
     if (num / 60 >= 1) {
@@ -41,14 +24,11 @@ export default class Timer extends Component {
     while (s.toString().length < 2) {
       s = '0' + s
     }
-    if (num < 0) {
-      clearInterval(this.timerID)
-    }
     const res = `${m}:${s}`
     return num > -1 ? res : 'Время вышло'
   }
 
-  timeMinSecConvert = (num) => {
+  const timeMinSecConvert = (num) => {
     let m = 0
     let s = 0
     if (num / 60 >= 1) {
@@ -58,45 +38,50 @@ export default class Timer extends Component {
     return [m, s]
   }
 
-  timer = () => {
-    this.setState(({ genTime }) => ({
-      genTime: genTime - 1,
-    }))
-  }
+  useEffect(() => {
+    if (timerWork) {
+      timerId = setInterval(() => {
+        setGenTime(genTime - 1)
+      }, 1000)
+      if (genTime < 0) {
+        setTimerWork(false)
+        clearInterval(timerId)
+      }
+      return () => {
+        const time = timeMinSecConvert(genTime)
+        timerUpdate(id, ...time)
+        clearInterval(timerId)
+      }
+    }
+  }, [genTime, timerWork])
 
-  timerOn = () => {
-    this.setState(({ timerNotWork }) => ({
-      timerNotWork: !timerNotWork,
-    }))
-    if (!this.state.timerNotWork) {
-      this.timerID = setInterval(() => this.timer(), 1000)
-    } else {
-      clearInterval(this.timerID)
+  useEffect(() => {
+    if (completed) {
+      setTimerWork(false)
+      clearInterval(timerId)
+    }
+  })
+
+  const onTimerPlay = () => {
+    if (!completed) {
+      if (!timerWork) {
+        setTimerWork(true)
+      } else {
+        setTimerWork(false)
+      }
     }
   }
 
-  onTimerPlay = () => {
-    if (!this.props.item.completed) {
-      this.timerOn()
-    } else {
-      clearInterval(this.timerID)
-      this.setState(() => ({
-        timerNotWork: false,
-      }))
-    }
-  }
+  const timerTaskStatus = classNames('timer-icon', {
+    'icon-play': !timerWork,
+    'icon-pause': timerWork,
+  })
 
-  render() {
-    const timerTaskStatus = classNames('timer-icon', {
-      'icon-play': !this.state.timerNotWork,
-      'icon-pause': this.state.timerNotWork,
-    })
-
-    return (
-      <Fragment>
-        <button className={timerTaskStatus} onClick={this.onTimerPlay} />{' '}
-        <div className="timer">{this.timeConvert(this.state.genTime)}</div>
-      </Fragment>
-    )
-  }
+  return (
+    <Fragment>
+      <button className={timerTaskStatus} onClick={onTimerPlay} /> <div className="timer">{timeConvert(genTime)}</div>
+    </Fragment>
+  )
 }
+
+export default Timer
